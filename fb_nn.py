@@ -2,9 +2,8 @@ import tensorflow as tf
 import numpy as np
 
 """
-TensorFlowの「MNIST For ML Beginners 」の通りの機械学習FizzBuzz
-正常にFizzBuzzできない
-直線でクラスわけしてるのが理由だと思うけど間違ってるかも
+TensorFlowの情報をググりまくって作った機械学習FizzBuzz
+各層の役割とか数値が適当かとかよくわかってない
 """
 
 # 初期値
@@ -16,6 +15,10 @@ N = 8
 C = 4
 # 訓練回数
 T = 10000
+L = 0.1
+# 隠れ層
+H1 = 64
+H2 = 64
 
 def fizz_buzz(n):
     """
@@ -31,7 +34,7 @@ def fizz_buzz(n):
     return n
 
 def fb_to_one_hot(fb):
-    """
+    """ 
     FizzBuzz文字列からそのクラスを表すベクトルを作成(one_hotという？？？)
     """
     if fb == "Fizz":
@@ -40,7 +43,7 @@ def fb_to_one_hot(fb):
         return [0, 0, 1, 0]
     elif fb == "FizzBuzz":
         return [0, 0, 0, 1]
-    return [0.3, 0, 0, 0]
+    return [1, 0, 0, 0]
 
 def one_hot_to_fb(n, a):
     """
@@ -68,7 +71,7 @@ def n_to_a(n):
 
 def create_training_data():
     """
-    訓練用(正解)データの作成
+    訓練用(正解)データの作成                                                                                         
     """
     x_data = []
     y_data = []
@@ -80,36 +83,71 @@ def create_training_data():
         y_data.append(fb_to_one_hot(fb))
     return (x_data, y_data)
 
+def model(x, weights, biases):
+    """
+    モデルの作成
+    入力(N)→隠れ1(N, H1)→隠れ2(H1, H2)→出力(H2, C)
+    """
+    with tf.name_scope('hidden1'):
+        layer_1 = tf.matmul(x, weights['h1']) + biases['b1']
+        layer_1 = tf.nn.relu(layer_1)
+    with tf.name_scope('hidden2'):
+        layer_2 = tf.matmul(layer_1, weights['h2']) + biases['b2']
+        layer_2 = tf.nn.relu(layer_2)
+    with tf.name_scope('output'):
+        out_layer = tf.matmul(layer_2, weights['out']) + biases['out']
+        return out_layer
+
+def loss(logits, labels):
+    """
+    学習のなにか(よくわかってない)
+    """
+#    cross_entropy = tf.nn.sparse_softmax_cross_entropy_with_logits(logits=logits, labels=labels)
+    cross_entropy = tf.nn.softmax_cross_entropy_with_logits(labels=labels, logits=logits)
+    loss = tf.reduce_mean(cross_entropy)
+    return loss
+
+weights = {
+    'h1': tf.Variable(tf.truncated_normal([N, H1], stddev=0.1)),
+    'h2': tf.Variable(tf.truncated_normal([H1, H2], stddev=0.1)),
+    'out': tf.Variable(tf.truncated_normal([H2, C], stddev=0.1))
+}
+biases = {
+    'b1': tf.Variable(tf.zeros([H1])),
+    'b2': tf.Variable(tf.zeros([H2])),
+    'out': tf.Variable(tf.zeros([C]))
+}
+
 # モデル作成
 x = tf.placeholder(tf.float32, [None, N])
-y_ = tf.placeholder(tf.float32, [None, C])
+y = tf.placeholder(tf.float32, [None, C])
 
-W = tf.Variable(tf.zeros([N, C]))
-b = tf.Variable(tf.zeros([C]))
+# Construct model
+pred = model(x, weights, biases)
 
-y = tf.matmul(x, W) + b
+# 学習のなにか(よくわかってない
+loss = loss(pred, y)
+train_step = tf.train.GradientDescentOptimizer(L).minimize(loss)
+#optimizer = tf.train.AdamOptimizer(learning_rate=L).minimize(cost)
+#optimizer = tf.train.GradientDescentOptimizer(learning_rate=L).minimize(cost)
 
-# 学習のなにか(よくわかってない)
-#cross_entropy = tf.reduce_mean(-tf.reduce_sum(y_ * tf.log(tf.nn.softmax(y)), reduction_indices=[1]))
-cross_entropy = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(labels=y_, logits=y))
-train_step = tf.train.GradientDescentOptimizer(0.5).minimize(cross_entropy)
+init = tf.global_variables_initializer()
 
 # セッション開始
 with tf.Session() as sess:
-    init = tf.global_variables_initializer()
     sess.run(init)
 
     # 訓練
     x_data, y_data = create_training_data()
     for _ in range(T):
-        train_step.run(feed_dict={x: x_data, y_: y_data})
+        sess.run(train_step, feed_dict={x: x_data, y: y_data})
 
     # 訓練結果出力
     for i in range(30):
         n = i + 1
         xx = [n_to_a(n)]
-        yy = sess.run(y, feed_dict={x: xx})
-#        print(n, one_hot_to_fb(n, yy[0]), yy)
+        yy = sess.run(pred, feed_dict={x: xx})
+#        print(n, one_hot_to_fb(n, yy[0]), np.argmax(yy[0]), yy)
 #        print(one_hot_to_fb(n, yy[0]))
         print(one_hot_to_fb(n, yy[0]), fizz_buzz(n))
 
