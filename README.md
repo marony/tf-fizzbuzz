@@ -1,12 +1,12 @@
 # FizzBuzz with TensorFlow
 
-fb_nn.pyがNNでfb_deep.pyが深層学習？？？(すみません、勉強中です)
-fb_nn.py is probably using NN. fb_deep.py is probably using Deep Learning.(now studying)
+fb_nn.pyがNNでfb_deep.pyが深層学習？？？(すみません、勉強中です)  
+fb_nn.py is probably using NN. fb_deep.py is probably using Deep Learning.(now studying)  
 
 ## FizzBuzz output
 
-左がTensorFlowを使ったプログラムの出力、右が普通に出力した正解
-left is TensorFlow output, right is correct answer
+左がTensorFlowを使ったプログラムの出力、右が普通に出力した正解  
+left is TensorFlow output, right is correct answer  
 
 ### fb_nn.py
 
