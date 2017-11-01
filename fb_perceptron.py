@@ -4,7 +4,7 @@ import numpy as np
 """
 TensorFlowの「MNIST For ML Beginners 」の通りの機械学習FizzBuzz
 正常にFizzBuzzできない
-直線でクラスわけしてるのが理由だと思うけど間違ってるかも
+線形関数でクラスわけしてるのが理由だと思うけど間違ってるかも
 """
 
 # 初期値

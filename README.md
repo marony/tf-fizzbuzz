@@ -1,7 +1,11 @@
 # FizzBuzz with TensorFlow
 
-fb_nn.pyがNNでfb_deep.pyが深層学習？？？(すみません、勉強中です)  
-fb_nn.py is probably using NN. fb_deep.py is probably using Deep Learning.(now studying)  
+- fb_perceptron.py  
+  単層パーセプトロンによるFizzBuzz  
+  FizzBuzz by single layer perceptron    
+- fb_nn.py  
+  2層ニューラルネットワークによるFizzBuzz  
+  FizzBuzz by two layer neural network  
 
 ## FizzBuzz output
 
