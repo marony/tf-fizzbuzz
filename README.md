@@ -7,12 +7,14 @@
   2層ニューラルネットワークによるFizzBuzz  
   FizzBuzz by two layer neural network  
 
+
 ## FizzBuzz output
 
-左がTensorFlowを使ったプログラムの出力、右が普通に出力した正解  
-left is TensorFlow output, right is correct answer  
+左がTensorFlowを使ったプログラムの出力、右が普通に出力した正解    
+left is TensorFlow output, right is correct answer    
 
-### fb_nn.py
+
+### fb_perceptron.py
 
 ```
 Fizz 1
@@ -47,7 +49,7 @@ Fizz 29
 FizzBuzz FizzBuzz
 ```
 
-### fb_deep.py
+### fb_nn.py
 
 ```
 1 1
